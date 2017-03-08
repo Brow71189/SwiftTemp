@@ -9,7 +9,7 @@ import subprocess
 import numpy as np
 
 ssh_path = 'C:/cygwin64/bin/ssh.exe'
-raspiname = 'raspi'
+raspiname = 'pwmraspi'
 
 class Camera():
     def __init__(self, **kwargs):
@@ -47,14 +47,15 @@ class Camera():
         temperature_string = res.stdout.decode()
         temperature = float(temperature_string[5:9])
         self.temperature_data[0].append(temperature)
-        self.temperature_data[1].append(temperature)
+        self.temperature_data[1].append(temperature+1)
         data_element = {}
         data_element['data'] = np.array(self.temperature_data)
-        data_element['properties'] = {'spatial_calibrations': [{'offset': 0, 'scale': 1, 'units': None}],
+        data_element['properties'] = {'spatial_calibrations': [{'offset': 0, 'scale': 1, 'units': None}]*2,
                                       'intensity_calibration': {'offset': 0, 'scale': 1, 'units': '°C'},
                                       'frame_number': self.frame_number}
         data_element['datum_dimension_count'] =  1
-        data_element['is_sequence'] = True
+        data_element['collection_dimension_count'] = 1
+        data_element['is_sequence'] = False
         self.frame_number += 1
         return data_element
 
